@@ -34,8 +34,6 @@ end entity;
 
 
 architecture behav of grain128_datapath_fast is
-
-
 -- On Altera devices, this will make things bigger but also faster
 -- by stopping Quartus from using memories instead of shift registers
 -- (since Altera lacks SLR16 primitives, puh!)
@@ -43,28 +41,20 @@ attribute altera_attribute : string;
 attribute altera_attribute of behav : architecture is "-name AUTO_SHIFT_REGISTER_RECOGNITION OFF";
 
 signal lfsr, nfsr : unsigned(0 to 127);
-signal func_h, func_g, func_f : std_logic;
-																									 
-
+signal func_h, func_g, func_f : std_logic;																									
 signal tmp1, tmp2, tmp3, tmp4, tmp5 : std_logic;		
 
-begin
-	
+begin	
 	-- outputs:
 	H_O <= func_h;
 
-	
-		
-	
 			
 	-- register balancing:
 	-- usualy, you can (should) leave this to the 
 	-- synthesizer which does a much better job	
-	
 	func_h <= tmp1 xor tmp2;		
 	func_g <= tmp3 xor tmp4;		
 	func_f <= tmp5;
-	
 	
 	retime_proc: process(CLK_I)
 	begin

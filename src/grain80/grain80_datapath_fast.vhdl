@@ -12,7 +12,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 
-entity grain_datapath_fast is
+entity grain80_datapath_fast is
 generic (
 	DEBUG : boolean := false			-- output debug information
 );
@@ -33,9 +33,7 @@ port (
 end entity;
 
 
-architecture behav of grain_datapath_fast is
-
-
+architecture behav of grain80_datapath_fast is
 -- On Altera devices, this will make things bigger but also faster
 -- by stopping Quartus from using memories instead of shift registers
 -- (since Altera lacks SLR16 primitives, puh!)
@@ -43,21 +41,15 @@ attribute altera_attribute : string;
 attribute altera_attribute of behav : architecture is "-name AUTO_SHIFT_REGISTER_RECOGNITION OFF";
 
 signal lfsr, nfsr : unsigned(0 to 79);
-
 signal func_h, func_g, func_f : std_logic;
-																									 
-
-signal tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7 : std_logic;		
+signal tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7 : std_logic;
 
 begin
 	
 	-- outputs:
 	H_O <= func_h;
 
-	
-		
-	
-			
+
 	-- register balancing:
 	-- 
 	-- this is just a dumb example I made up, you should instead
@@ -65,8 +57,7 @@ begin
 	-- 
 	func_h <= tmp1 xor tmp2;		
 	func_g <= tmp3 xor tmp4 xor tmp5 xor tmp6;		
-	func_f <= tmp7;
-	
+	func_f <= tmp7;	
 	
 	retime_proc: process(CLK_I)
 		variable nfsr_e, lfsr_e : unsigned(0 to 79);
@@ -90,7 +81,6 @@ begin
 					(lfsr_e(3) and lfsr_e(46) and nfsr_e(63)) xor 
 					(lfsr_e(25) and lfsr_e(46) and nfsr_e(63)) xor 
 					(lfsr_e(46) and lfsr_e(64) and nfsr_e(63));
-	
 				
 				-- G
 				tmp3 <= 
@@ -118,11 +108,7 @@ begin
 				-- F
 				tmp7 <= 
 					lfsr_e(62) xor lfsr_e(51) xor lfsr_e(38) xor lfsr_e(23) xor lfsr_e(13) xor lfsr_e(0);
-			
-			
 	
-
-			
 			end if;
 		end if;
 	end process;			

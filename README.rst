@@ -7,11 +7,11 @@ The main strength of Grain is its small hardware footprint. For example, on a Xi
 
 
 Features
+========
 
-- Implementations of both Grain-1 and Grain-128 
-- Includes VHDL code and testbenches 
-- Uses pure VHDL'93 with no architecture dependent constructs. 
-- Push-button synthesis on all major devices. 
-- Each stream cipher is implemented in a small and a fast version.
+* Implementations of both Grain-1 and Grain-128 
+* Includes VHDL code and testbenches 
+* Uses pure VHDL'93 with no architecture dependent elements
+* Each stream cipher is implemented in a small and a fast version.
 
 

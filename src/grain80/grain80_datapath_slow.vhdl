@@ -12,7 +12,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 
-entity grain_datapath_slow is
+entity grain80_datapath_slow is
 generic (
 	DEBUG : boolean := false			-- output debug information
 );
@@ -33,11 +33,11 @@ port (
 end entity;
 
 
-architecture behav of grain_datapath_slow is
+architecture behav of grain80_datapath_slow is
 
 signal lfsr, nfsr : unsigned(0 to 79);
-
 signal func_h, func_g, func_f : std_logic;
+
 begin
 	
 	-- outputs:

@@ -1,5 +1,5 @@
 --
--- Grain
+-- Grain128
 --
 --
 --
@@ -11,7 +11,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 
-entity grain is
+entity grain128 is
 generic (
 	DEBUG : boolean := false;		-- output debug information
 	FAST : boolean := false			-- attempt manual register balancing
@@ -26,16 +26,15 @@ port (
 	INIT_I: in std_logic;
 	
 	KEYSTREAM_O : out std_logic;
-	KEYSTREAM_VALID_O : out std_logic
+	KEYSTREAM_VALID_O : out std_logic	
 );
 end entity;
 
 
-architecture behav of grain is
+architecture behav of grain128 is
 type state_t is (IDLE, INIT_KEYIV, INIT_RUN);
 signal state : state_t;
-signal cnt : unsigned(7 downto 0) := (others => '0');
-signal cnt79, cnt63, cnt239 : std_logic := '0';
+signal cnt : unsigned(8 downto 0);
 
 signal inject_input, set_injected_iv , allow_output : std_logic;
 signal add_output : std_logic;
@@ -52,7 +51,7 @@ begin
 		 
 	slow_design: if FAST = false generate
 	begin	
-		functions0: entity work.grain_datapath_slow
+		functions0: entity work.grain128_datapath_slow
 		generic map ( DEBUG => DEBUG )
 		port map (
 			CLK_I    => CLK_I,
@@ -71,7 +70,7 @@ begin
 	
 	fast_design: if FAST = true generate				
 	begin	
-		functions1: entity work.grain_datapath_fast
+		functions1: entity work.grain128_datapath_fast
 		generic map ( DEBUG => DEBUG )
 		port map (
 			CLK_I    => CLK_I,
@@ -118,27 +117,9 @@ begin
 		if rising_edge(CLK_I) then
 			if CLKEN_I = '1' then
 				if state = IDLE then
-					cnt <= b"0000_0001";
+					cnt <= b"0_0000_0001";
 				else					
 					cnt <= cnt + 1;
-				end if;
-				
-				if cnt = 79 then
-					cnt79 <= '1';
-				else
-					cnt79 <= '0';
-				end if;
-				
-				if cnt = 63 then
-					cnt63 <= '1';
-				else
-					cnt63 <= '0';
-				end if;
-				
-				if cnt = 239 then
-					cnt239 <= '1';
-				else
-					cnt239 <= '0';
 				end if;
 			end if;
 			
@@ -157,9 +138,6 @@ begin
 			allow_output <= '0';
 		elsif rising_edge(CLK_I) then
 			if CLKEN_I = '1' then
-						
-				
-				
 				case state is
 					when IDLE =>
 					if INIT_I = '1' then
@@ -170,18 +148,18 @@ begin
 					end if;
 					
 					when INIT_KEYIV =>					
-					if cnt63 = '1'  then
+					if cnt(6 downto 5) = "11" then
 						set_injected_iv <= '1';
 					end if;
 										
-					if cnt79 = '1' then
+					if cnt(7) = '1' then
 						state <= INIT_RUN;
 						inject_input <= '0';
 						add_output <= '1';
 					end if;
 					
 					when INIT_RUN =>					
-					if cnt239 = '1' then
+					if cnt(8 downto 7) = "11" then
 						state <= IDLE;
 						add_output <= '0';
 						allow_output <= '1';
