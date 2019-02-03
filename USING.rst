@@ -1,7 +1,8 @@
 
-
 Using the Grain IP
 ==================
+
+(this currently only covers grain80 and grain128, but grain128a should work similarly).
 
 To use the Grain IP, first instantiate the VHDL entity in your design::
 
