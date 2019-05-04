@@ -8,12 +8,13 @@ LINT = verilator -Wall --lint-only --bbox-sys --bbox-unsup -Wno-STMTDLY
 SYNTH = yosys -Q -v 1
 PNR=nextpnr-ice40
 
+#
+all: lint sim synth
 
-all: sim80 sim128 sim128a
-
+sim: sim80 sim128 sim128a
+show: show80 show128 show128a
 lint: lint80 lint128 lint128a
-
-
+synth: synth80 synth128 synth128a
 
 # grain80:
 .PHONY: sim80 show80
@@ -24,7 +25,10 @@ show80: build/tb_grain80.vcd
 	$(GTKWAVE) build/tb_grain80.vcd
 
 lint80:
-# TODO
+	echo "TODO: implement lint for grain80"
+
+synth80:
+	echo "TODO: implement synth for grain80"
 
 build/tb_grain80.vcd: build src/grain80/*.vhdl
 	ghdl -a --workdir=build src/grain80/grain80_datapath_*.vhdl
@@ -33,8 +37,6 @@ build/tb_grain80.vcd: build src/grain80/*.vhdl
 
 	ghdl -e --workdir=build tb_grain80
 	ghdl -r --workdir=build tb_grain80 test --vcd=build/tb_grain80.vcd --stop-time=150us
-
-
 
 # grain128
 .PHONY: sim128 show128
@@ -45,7 +47,10 @@ show128: build/tb_grain128.vcd
 	$(GTKWAVE) build/tb_grain128.vcd
 
 lint128:
-# TODO
+	echo "TODO: implement lint for grain128"
+
+synth128:
+	echo "TODO: implement synth for grain128"
 
 build/tb_grain128.vcd: build src/grain128/*.vhdl
 	ghdl -a --workdir=build src/grain128/grain128_datapath_*.vhdl
@@ -59,6 +64,8 @@ build/tb_grain128.vcd: build src/grain128/*.vhdl
 .PHONY: sim128a show128a
 
 sim128a: build/tb_grain128a.vcd
+
+synth128a: build/grain128a.json
 
 show128a: build/tb_grain128a.vcd
 	$(GTKWAVE) build/tb_grain128a.vcd
@@ -75,6 +82,11 @@ build/grain128a.json: build src/grain128a/*
 	$(SYNTH)  -p 'read_verilog -Isrc/grain128a src/grain128a/grain128a.v' -p 'synth_ice40 -top grain128a -retime -json build/grain128a.json' -l build/grain128a.synth.log -o build/grain128a.v
 	-grep  -i -A 40 "Printing statistics" build/grain128a.synth.log
 
+
+#
+
+setup:
+	sudo apt install -y verilator gtkwave iverilog ghdl yosys arachne-pnr
 
 clean:
 	rm -rf build
