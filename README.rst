@@ -18,7 +18,7 @@ Open source
 I am using this project evaluate free and open-source EDA tools. 
 Since verilog is better supported by FOSS EDA tools I will eventually re-write the VHDL code in verilog.
 
-If you are interested in a similar evaluation for a minimal SoC, have a look at my `ARM-FOSS <https://bitbucket.org/vahidi/arm-foss>`_ project.
+If you are interested in a similar evaluation for a minimal SoC, have a look at my `ARM-FOSS <https://github.com/avahidi/arm-foss>`_ project.
 
 Notes
 -----
